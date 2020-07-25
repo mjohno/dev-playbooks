@@ -1,0 +1,59 @@
+- name: Install Vim and dependencies on Debian
+  apt:
+    name: [ build-essential, vim, cmake, python3-dev ]
+    state: latest
+  become: true
+  when: ansible_os_family == 'Debian'
+  tags:
+    - skip_ansible_lint # Latest is fine
+
+- name: Install Vim and dependencies on Arch
+  pacman:
+    name: [ vim, cmake ]
+    state: latest
+  become: true
+  when: ansible_os_family == 'Archlinux'
+  tags:
+    - skip_ansible_lint # Latest is fine
+
+- name: Create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ vim_root }}"
+    - "{{ vim_bundle }}"
+    - "{{ vim_ftplugin }}"
+    - "{{ vim_ftdetect }}"
+
+- name: Create the {{ vim_root }}/vimrc file
+  template:
+    src: 'templates/vimrc.j2'
+    dest: "{{ vim_root }}/vimrc"
+
+- name: Create the filetype detection files
+  template:
+    src: "{{ item }}"
+    dest: "{{ vim_ftdetect }}/{{ item | basename | regex_replace('\\.j2', '') }}"
+  with_fileglob:
+    - "../templates/ftdetect/*"
+
+- name: Create the filetype plugin files
+  template:
+    src: "{{ item }}"
+    dest: "{{ vim_ftplugin }}/{{ item | basename | regex_replace('\\.j2', '') }}"
+  with_fileglob:
+    - "../templates/ftplugin/*"
+
+- name: Download Vundle.vim into {{ vim_bundle }}
+  git:
+    repo: 'https://github.com/VundleVim/Vundle.vim.git'
+    dest: "{{ vim_bundle }}/Vundle.vim"
+  tags:
+    - skip_ansible_lint # Latest is fine
+
+- name: Install/Update plugins with Vundle
+  shell: vim +PluginInstall! +qall
+  tags:
+    - skip_ansible_lint # Latest is fine
+

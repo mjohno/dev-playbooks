@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  connection: local
+  remote_user: root
+  vars:
+    git_user_name: "A rando"
+    git_user_email: "arando@1234.com"
+  roles:
+    - ../..

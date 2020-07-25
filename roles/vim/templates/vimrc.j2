@@ -1,0 +1,51 @@
+" Start Vundle Config
+set nocompatible
+filetype off 
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" Start Plugins
+
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'python-mode/python-mode'
+Plugin 'hashivim/vim-terraform'
+
+" End Plugins
+call vundle#end()
+filetype plugin indent on
+" End Vundle Config
+syntax on
+
+" Turn off doc dropdowns
+let g:pymode_doc = 0
+" Stop autocomplete on dot
+let g:pymode_rope_complete_on_dot = 0
+
+set bs=indent,eol,start
+set ruler
+set number
+set bg=dark
+set hlsearch
+set incsearch
+set nowrap
+
+set softtabstop=2
+set shiftwidth=2
+set expandtab
+
+set undodir={{ vim_undodir }}
+set undofile
+
+set termguicolors
+
+noremap <Up> <nop>
+noremap <Down> <nop>
+noremap <Left> <nop>
+noremap <Right> <nop>
+noremap <Insert> <nop>
+noremap <Delete> <nop>
+noremap <Home> <nop>
+noremap <End> <nop>
+noremap <PageUp> <nop>
+noremap <PageDown> <nop>

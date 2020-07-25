@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  connection: local
+  remote_user: root
+
+  tasks:
+    - set_fact:
+       git_user_name: "A rando"
+    - set_fact:
+        git_user_email: "arando@1234.com"
+
+- include: "../bootstrap.yml"

@@ -1,0 +1,2 @@
+---
+git_global_config: "{{ ansible_env.HOME }}/.gitconfig"

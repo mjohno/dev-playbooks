@@ -1,0 +1,18 @@
+galaxy_info:
+  author: mjohno
+  description: Sets up some gitconfig for my aliases
+  company: mjohno
+
+  license: BSD
+
+  min_ansible_version: 1.2
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - xenial
+
+  galaxy_tags:
+    - git
+
+dependencies: []

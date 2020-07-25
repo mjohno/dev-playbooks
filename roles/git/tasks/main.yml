@@ -1,0 +1,28 @@
+- name: Assert mandatory variables exist
+  assert:
+    that:
+      - "git_user_email is defined"
+      - "git_user_name is defined"
+
+- name: Install Git on Debian
+  apt:
+    name: git
+    state: latest
+  when: ansible_os_family == 'Debian'
+  become: True
+  tags:
+    - skip_ansible_lint # Latest is fine
+
+- name: Install Git on Arch
+  pacman:
+    name: git
+    state: latest
+  when: ansible_os_family == 'Archlinux'
+  become: True
+  tags:
+    - skip_ansible_lint # Latest is fine
+
+- name: Create the {{ git_global_config }} file
+  template:
+    src: 'templates/gitconfig.j2'
+    dest: "{{ git_global_config }}"

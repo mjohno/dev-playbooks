@@ -1,0 +1,13 @@
+---
+terraform_bin_dir: "{{ ansible_env.HOME }}/bin"
+terraform_temp_dir: "{{ terraform_bin_dir }}/temp"
+terraform_gpg_fingerprint: "91A6 E7F8 5D05 C656 30BE F189 5185 2D87 348F FC4C"
+terraform_version: '0.11.10'
+terraform_architecture: 'amd64'
+terraform_os: 'linux'
+terraform_artifact_repository: "https://releases.hashicorp.com/terraform/{{ terraform_version }}"
+terraform_named_version: "terraform_{{ terraform_version }}"
+terraform_distribution: "{{ terraform_os }}_{{ terraform_architecture }}"
+terraform_zip: "{{ terraform_named_version }}_{{ terraform_distribution }}.zip"
+terraform_shasum: "{{ terraform_named_version }}_SHA256SUMS"
+terraform_shasum_sig: "{{ terraform_named_version }}_SHA256SUMS.sig"

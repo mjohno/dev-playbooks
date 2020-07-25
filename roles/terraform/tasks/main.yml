@@ -1,0 +1,87 @@
+- name: Gather existing Terraform version
+  command: "{{ terraform_bin_dir }}/terraform --version"
+  ignore_errors: True
+  tags:
+    - skip_ansible_lint # There isn't an Ansible module for this
+  register: terraform_current_version
+
+- block:
+    - name: Install requirements on Debian
+      apt:
+        name: "unzip"
+      when: ansible_os_family == "Debian"
+      become: True
+
+    - name: Install requirements on Arch
+      pacman:
+        name: "unzip"
+      when: ansible_os_family == "Archlinux"
+      become: True
+
+    - name: Create directories
+      file:
+        dest: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ terraform_bin_dir }}"
+        - "{{ terraform_temp_dir }}"
+
+    - name: Check Hashicorp GPG key is alread installed
+      command: gpg --fingerprint
+      register: gpg_fingerprint_output
+      tags:
+        - skip_ansible_lint # There isn't an Ansible module for this
+
+    - name: Template the Hashicorp GPG file
+      template:
+        src: 'templates/hashicorp.asc.j2'
+        dest: "{{ terraform_bin_dir }}/hashicorp.asc"
+      when: not ansible_check_mode and (terraform_gpg_fingerprint not in gpg_fingerprint_output.stdout)
+
+    - name: Import the Hashicorp GPG file
+      command: "gpg --import {{ terraform_bin_dir }}/hashicorp.asc"
+      when: not ansible_check_mode and (terraform_gpg_fingerprint not in gpg_fingerprint_output.stdout)
+      tags:
+        - skip_ansible_lint # There isn't an Ansible module for this
+
+    - name: Clean the Hashicorp GPG file
+      file:
+        dest: "{{ terraform_bin_dir }}/hashicorp.asc"
+        state: absent
+      when: not ansible_check_mode and (terraform_gpg_fingerprint not in gpg_fingerprint_output.stdout)
+
+    - name: Download Terraform and checksum files
+      get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - { url: "{{ terraform_artifact_repository }}/{{ terraform_zip }}", dest: "{{ terraform_temp_dir }}/{{ terraform_zip }}" }
+        - { url: "{{ terraform_artifact_repository }}/{{ terraform_shasum }}", dest: "{{ terraform_temp_dir }}/{{ terraform_shasum }}" }
+        - { url: "{{ terraform_artifact_repository }}/{{ terraform_shasum_sig }}", dest: "{{ terraform_temp_dir }}/{{ terraform_shasum_sig }}" }
+
+    - name: Validate checksum files
+      command: "gpg --verify {{ terraform_temp_dir }}/{{ terraform_shasum_sig }} {{ terraform_temp_dir }}/{{ terraform_shasum }}"
+      tags:
+        - skip_ansible_lint # There isn't an Ansible module for this
+
+    - name: Validate the Terraform binary
+      shell: "grep {{ terraform_zip }} {{ terraform_shasum }} | shasum -a 256 -c"
+      args:
+        chdir: "{{ terraform_temp_dir }}"
+      tags:
+        - skip_ansible_lint # There isn't an Ansible module for this
+
+    - name: Extract the Terraform binary
+      unarchive:
+        src: "{{ terraform_temp_dir }}/{{ terraform_zip }}"
+        dest: "{{ terraform_bin_dir }}"
+        remote_src: True
+      when: not ansible_check_mode
+  # The version is skipped in checked mode, the version is failed when terraform isn't installed, the version has stdout when it is installed.
+  # Only want to run the installation when the version doesn't match or terraform doesn't exist.
+  when: terraform_current_version is skipped or terraform_current_version is failed or ( "Terraform v" + terraform_version not in terraform_current_version.stdout)
+  always:
+    - name: Clean temp directory
+      file:
+        dest: "{{ terraform_temp_dir }}"
+        state: absent

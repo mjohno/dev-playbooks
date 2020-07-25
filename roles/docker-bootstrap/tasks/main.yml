@@ -1,0 +1,27 @@
+---
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+  become: True
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+
+- name: Add docker gpg key
+  apt_key:
+    url: "{{ docker_bs_key_url }}"
+    id: "{{ docker_bs_fingerprint }}"
+  become: True
+
+- name: Add docker apt-repository
+  apt_repository:
+    repo: "{{ docker_bs_apt_repo }}"
+  become: True
+
+- name: Install docker
+  apt:
+    name: docker-ce
+  become: True
+  when: not ansible_check_mode # Skipping in dry-run becaues the package doesn't actually exist
