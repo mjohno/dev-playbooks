@@ -8,7 +8,7 @@ vim_plugins:
   - name: python-mode
     repo: https://github.com/python-mode/python-mode.git
     recursive: yes
-    version: master
+    version: develop
   - name: vim-terraform
     repo: https://github.com/hashivim/vim-terraform.git
     recursive: no
