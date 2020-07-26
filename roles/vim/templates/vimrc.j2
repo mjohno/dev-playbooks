@@ -1,9 +1,16 @@
 syntax on
 
-" Turn off doc dropdowns
-let g:pymode_doc = 0
+" pymode-settings
+" Turn on rope autocompletion support
+let g:pymode_rope = 1
 " Stop autocomplete on dot
 let g:pymode_rope_complete_on_dot = 0
+" Turn off doc dropdowns
+let g:pymode_doc = 0
+
+" Vim display a menu when only 1 item is available for autocomplete
+" Vim will not automatically insert that item.
+set completeopt=menuone,noinsert
 
 set bs=indent,eol,start
 set ruler
