@@ -1,6 +1,15 @@
 ---
 vim_root: "{{ ansible_env.HOME }}/.vim"
-vim_bundle: "{{ vim_root }}/bundle"
 vim_ftplugin: "{{ vim_root }}/ftplugin"
 vim_ftdetect: "{{ vim_root }}/ftdetect"
 vim_undodir: "{{ vim_root }}/undodir"
+vim_pack: "{{ vim_root }}/pack/plugins"
+vim_plugins:
+  - name: python-mode
+    repo: https://github.com/python-mode/python-mode.git
+    recursive: yes
+    version: master
+  - name: vim-terraform
+    repo: https://github.com/hashivim/vim-terraform.git
+    recursive: no
+    version: master

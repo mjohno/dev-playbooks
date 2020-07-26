@@ -20,11 +20,11 @@
   file:
     path: "{{ item }}"
     state: directory
-  with_items:
+  loop:
     - "{{ vim_root }}"
-    - "{{ vim_bundle }}"
     - "{{ vim_ftplugin }}"
     - "{{ vim_ftdetect }}"
+    - "{{ vim_pack }}"
 
 - name: Create the {{ vim_root }}/vimrc file
   template:
@@ -45,15 +45,11 @@
   with_fileglob:
     - "../templates/ftplugin/*"
 
-- name: Download Vundle.vim into {{ vim_bundle }}
+- name: Install and update autoload plugins
   git:
-    repo: 'https://github.com/VundleVim/Vundle.vim.git'
-    dest: "{{ vim_bundle }}/Vundle.vim"
-  tags:
-    - skip_ansible_lint # Latest is fine
-
-- name: Install/Update plugins with Vundle
-  shell: vim +PluginInstall! +qall
-  tags:
-    - skip_ansible_lint # Latest is fine
+    dest: "{{ vim_pack }}/start/{{ item.name }}"
+    repo: "{{ item.repo }}"
+    version: "{{ item.version }}"
+    recursive: "{{ item.recursive }}"
+  loop: "{{ vim_plugins }}"
 
