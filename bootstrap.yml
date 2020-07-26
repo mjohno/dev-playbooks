@@ -3,7 +3,7 @@
   connection: local
 
   roles:
-    - git
-    - vim
+    - { name: git, tags: git }
+    - { name: vim, tags: vim }
    #- terraform
    #- docker-bootstrap
