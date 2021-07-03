@@ -1,7 +1,0 @@
-sudo: required
-language: python
-services:
-  - docker
-install: true
-script:
-  - docker build -f tests/Dockerfile .

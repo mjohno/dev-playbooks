@@ -11,5 +11,13 @@ vim_plugins:
     version: develop
   - name: vim-terraform
     repo: https://github.com/hashivim/vim-terraform.git
-    recursive: no
+    recursive: yes
+    version: master
+  - name: nim.vim
+    repo: https://github.com/zah/nim.vim.git
+    recursive: yes
+    version: master
+  - name: zig.vim
+    repo: https://github.com/ziglang/zig.vim
+    recursive: yes
     version: master

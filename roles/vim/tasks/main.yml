@@ -25,6 +25,7 @@
     - "{{ vim_ftplugin }}"
     - "{{ vim_ftdetect }}"
     - "{{ vim_pack }}"
+    - "{{ vim_undodir }}"
 
 - name: Create the {{ vim_root }}/vimrc file
   template:
