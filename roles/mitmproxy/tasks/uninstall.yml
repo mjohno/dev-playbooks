@@ -1,0 +1,21 @@
+---
+- name: Remove mitmproxy {{ mitm_version }} from {{ mitm_tmp_dir }}
+  ansible.builtin.file:
+    path: "{{ mitm_tmp_dir }}/{{ mitm_file_name }}"
+    state: absent
+
+- name: Remove symlinks from {{ mitm_symlink_to }}
+  ansible.builtin.file:
+    state: absent
+    path: "{{ mitm_symlink_to }}/{{ item }}"
+  become: yes
+  loop:
+    - mitmdump
+    - mitmproxy
+    - mitmweb
+
+- name: Remove {{ mitm_install_dir }}
+  ansible.builtin.file:
+    path: "{{ mitm_base_dir }}"
+    state: absent
+  become: yes

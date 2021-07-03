@@ -1,0 +1,11 @@
+---
+mitm_version: 6.0.2
+mitm_base_url: https://snapshots.mitmproxy.org
+mitm_file_name: mitmproxy-{{ mitm_version }}-linux.tar.gz
+mitm_download_url: "{{ mitm_base_url }}/{{ mitm_version }}/{{ mitm_file_name }}"
+mitm_tmp_dir: /tmp
+mitm_base_dir: /opt/mitmproxy
+mitm_install_dir: "{{ mitm_base_dir }}/{{ mitm_version }}"
+mitm_symlink_to: /usr/bin
+mitm_state: present
+mitm_proxy_mode: regular

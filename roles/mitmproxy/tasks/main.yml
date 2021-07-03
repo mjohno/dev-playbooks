@@ -1,0 +1,16 @@
+---
+- name: Install mitmproxy
+  include_tasks: install.yml
+  when: mitm_state == 'present'
+
+- name: Uninstall mitmproxy
+  include_tasks: uninstall.yml
+  when: mitm_state == 'absent'
+
+- name: Transparent mitmproxy mode
+  include_tasks: transparent.yml
+  when: mitm_proxy_mode == 'transparent'
+
+- name: Regular mitmproxy mode
+  include_tasks: regular.yml
+  when: mitm_proxy_mode == 'regular'

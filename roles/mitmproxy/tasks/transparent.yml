@@ -1,0 +1,29 @@
+---
+- name: Configure kernel settings for transparent proxying
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+  become: yes
+  loop:
+    - { name: net.ipv4.ip_forward, value: '1' }
+    - { name: net.ipv6.conf.all.forwarding, value: '1' }
+    - { name: net.ipv4.conf.all.send_redirects, value: '0' }
+
+- name: Configure iptables to forward traffic to mitmproxy
+  ansible.builtin.iptables:
+    ip_version: "{{ item.ip_version }}"
+    table: nat
+    chain: PREROUTING
+    in_interface: enp1s0
+    protocol: tcp
+    destination_port: "{{ item.dport }}"
+    jump: REDIRECT
+    to_ports: 8080
+    comment: Mitmproxy web traffic to port 8080
+  become: yes
+  loop:
+    - { dport: 80, ip_version: ipv4 }
+    - { dport: 443, ip_version: ipv4 }
+    - { dport: 80, ip_version: ipv6 }
+    - { dport: 443, ip_version: ipv6 }

@@ -1,0 +1,33 @@
+---
+- name: Download mitmproxy {{ mitm_version }} to {{ mitm_tmp_dir }}
+  ansible.builtin.uri:
+    url: "{{ mitm_download_url }}"
+    dest: "{{ mitm_tmp_dir }}/{{ mitm_file_name }}"
+    creates: "{{ mitm_tmp_dir }}/{{ mitm_file_name }}"
+    status_code: [ 200, 304 ]
+  register: mitm_download
+
+- name: Create {{ mitm_install_dir }}
+  ansible.builtin.file:
+    path: "{{ mitm_install_dir }}"
+    state: directory
+  become: yes
+
+- name: Extract {{ mitm_tmp_dir }}/{{ mitm_file_name }} to {{ mitm_install_dir }}
+  ansible.builtin.unarchive:
+    src: "{{ mitm_tmp_dir }}/{{ mitm_file_name }}"
+    dest: "{{ mitm_install_dir }}"
+    group: root
+    owner: root
+    mode: 0755
+    list_files: yes
+  become: yes
+  register: mitm_unarchived
+
+- name: Symlink {{ mitm_unarchived.files }} to {{ mitm_symlink_to }}
+  ansible.builtin.file:
+    state: link
+    src: "{{ mitm_install_dir }}/{{ item }}"
+    dest: "{{ mitm_symlink_to }}/{{ item }}"
+  become: yes
+  loop: "{{ mitm_unarchived.files }}"
