@@ -1,0 +1,8 @@
+---
+- name: Install amassproxy
+  include_tasks: install.yml
+  when: amass_state == 'present'
+
+- name: Uninstall amassproxy
+  include_tasks: uninstall.yml
+  when: amass_state == 'absent'

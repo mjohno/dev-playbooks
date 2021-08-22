@@ -1,0 +1,12 @@
+galaxy_info:
+  author: mjohno
+  description: Install and manage mitmproxy
+  license: BSD-3-Clause
+  min_ansible_version: 2.1
+  platforms:
+  - name: ArchLinux
+    versions:
+    - all
+
+  galaxy_tags: [amass]
+dependencies: []

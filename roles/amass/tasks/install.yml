@@ -1,0 +1,35 @@
+---
+- name: Download amassproxy {{ amass_version }} to {{ amass_tmp_dir }}
+  ansible.builtin.uri:
+    url: "{{ amass_download_url }}"
+    dest: "{{ amass_tmp_dir }}/{{ amass_file_name }}"
+    creates: "{{ amass_tmp_dir }}/{{ amass_file_name }}"
+    status_code: [ 200, 304 ]
+  register: amass_download
+
+- name: Create {{ amass_install_dir }}
+  ansible.builtin.file:
+    path: "{{ amass_install_dir }}"
+    state: directory
+  become: yes
+
+- name: Extract {{ amass_tmp_dir }}/{{ amass_file_name }} to {{ amass_install_dir }}
+  ansible.builtin.unarchive:
+    src: "{{ amass_tmp_dir }}/{{ amass_file_name }}"
+    dest: "{{ amass_install_dir }}"
+    group: root
+    owner: root
+    mode: 0755
+    list_files: yes
+  become: yes
+  register: amass_unarchived
+
+- name: Symlink {{ amass_unarchived.files }} to {{ amass_symlink_to }}
+  ansible.builtin.file:
+    state: link
+    src: "{{ amass_install_dir }}/{{ item }}"
+    # use the `basename` filter to strip off amass_linux_amd64 in the dest
+    dest: "{{ amass_symlink_to }}/{{ item | basename}}"
+  become: yes
+  when: item == "amass_linux_amd64/amass"
+  loop: "{{ amass_unarchived.files }}"

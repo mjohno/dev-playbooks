@@ -1,0 +1,17 @@
+---
+- name: Remove amassproxy {{ amass_version }} from {{ amass_tmp_dir }}
+  ansible.builtin.file:
+    path: "{{ amass_tmp_dir }}/{{ amass_file_name }}"
+    state: absent
+
+- name: Remove symlinks from {{ amass_symlink_to }}
+  ansible.builtin.file:
+    state: absent
+    path: "{{ amass_symlink_to }}/amass"
+  become: yes
+
+- name: Remove {{ amass_install_dir }}
+  ansible.builtin.file:
+    path: "{{ amass_base_dir }}"
+    state: absent
+  become: yes

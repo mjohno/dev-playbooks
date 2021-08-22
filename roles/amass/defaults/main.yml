@@ -1,0 +1,10 @@
+---
+amass_version: v3.13.4
+amass_base_url: https://github.com/OWASP/Amass/releases/download
+amass_file_name: amass_linux_amd64.zip
+amass_download_url: "{{ amass_base_url }}/{{ amass_version }}/{{ amass_file_name }}"
+amass_tmp_dir: /tmp
+amass_base_dir: /opt/amass
+amass_install_dir: "{{ amass_base_dir }}/{{ amass_version }}"
+amass_symlink_to: /usr/bin
+amass_state: present
