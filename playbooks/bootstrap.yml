@@ -6,5 +6,6 @@
     - { name: ../roles/git, tags: git }
     - { name: ../roles/vim, tags: vim }
     - { name: ../roles/mitmproxy, tags: mitmproxy }
+    - { name: ../roles/amass, tags: amass }
    #- terraform
    #- docker-bootstrap
